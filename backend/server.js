@@ -17,11 +17,34 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ── Middleware ─────────────────────────────────────────────────
-app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:5173"],
-  methods: ["GET", "POST", "OPTIONS"],
+
+// Define allowed origins
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  process.env.FRONTEND_URL || "https://email-spam-virid.vercel.app"
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like Postman or curl)
+    if (!origin) return callback(null, true);
+    
+    // Check if the exact origin is allowed (no wildcards)
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-}));
+  credentials: true, // Allow cookies/authorization headers if needed
+  optionsSuccessStatus: 200 // Resolve preflight correctly on older browsers
+};
+
+// Must be placed BEFORE routes so options/preflight requests are intercepted early
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
