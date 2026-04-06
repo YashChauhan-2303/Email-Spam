@@ -6,7 +6,7 @@ import KnowledgeBase from './components/KnowledgeBase';
 import HowItWorks from './components/HowItWorks';
 import styles from './App.module.css';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = `${import.meta.env.VITE_BACK_API || 'http://localhost:5000'}/api`;
 
 export default function App() {
   const [emailText, setEmailText] = useState('');
