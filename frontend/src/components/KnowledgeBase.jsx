@@ -8,7 +8,7 @@ export default function KnowledgeBase() {
   const [filter, setFilter] = useState('ALL');
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACK_API || 'http://localhost:5000'}/api/rules`)
+    fetch(`${import.meta.env.VITE_BACK_API}/api/rules`)
       .then(r => r.json())
       .then(d => { setData(d); setLoading(false); })
       .catch(() => {
