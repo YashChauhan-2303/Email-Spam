@@ -68,6 +68,10 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get('/health', (req, res) => {
+  res.send('OK');
+});
+
 // ── 404 Handler ────────────────────────────────────────────────
 app.use((req, res) => {
   res.status(404).json({ error: `Route not found: ${req.method} ${req.path}` });
