@@ -41,7 +41,7 @@ export default function App() {
       setResult(data);
     } catch (err) {
       if (err.name === 'TypeError' && err.message.includes('fetch')) {
-        setError('Cannot connect to backend server. Make sure it is running on port 5000.');
+        setError(`Cannot connect to backend server at ${API_BASE}. It might be down or blocking requests (CORS).`);
       } else {
         setError(err.message || 'An unexpected error occurred.');
       }
