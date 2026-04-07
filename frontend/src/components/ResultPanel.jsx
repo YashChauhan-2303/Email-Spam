@@ -1,8 +1,8 @@
 import React from 'react';
 import styles from './ResultPanel.module.css';
 
-export default function ResultPanel({ result, loading, error }) {
-  if (loading) return <LoadingSkeleton />;
+export default function ResultPanel({ result, loading, isWaking, error }) {
+  if (loading) return <LoadingSkeleton isWaking={isWaking} />;
   if (error) return <ErrorCard message={error} />;
   if (!result) return <EmptyState />;
 
@@ -211,12 +211,14 @@ function ExplanationList({ explanation, isSpam, isPromo }) {
 }
 
 /* ── Loading Skeleton ──────────────────────────────────────────── */
-function LoadingSkeleton() {
+function LoadingSkeleton({ isWaking }) {
   return (
     <div className={styles.panel}>
       <div className={styles.loadingState}>
         <div className={styles.loadingSpinner} />
-        <div className={styles.loadingTitle}>Running Inference Engine...</div>
+        <div className={styles.loadingTitle}>
+          {isWaking ? 'Waking up backend server (this takes up to 50s)...' : 'Running Inference Engine...'}
+        </div>
         <div className={styles.loadingSteps}>
           <div className={styles.loadingStep}>
             <span className={styles.loadingDot} style={{ animationDelay: '0s' }} />

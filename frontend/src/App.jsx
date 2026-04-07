@@ -13,6 +13,7 @@ export default function App() {
   const [sender, setSender]       = useState('');
   const [result, setResult]       = useState(null);
   const [loading, setLoading]     = useState(false);
+  const [isWaking, setIsWaking]   = useState(false);
   const [error, setError]         = useState(null);
   const [activeTab, setActiveTab] = useState('analyzer'); // 'analyzer' | 'kb' | 'how'
 
@@ -22,8 +23,13 @@ export default function App() {
       return;
     }
     setLoading(true);
+    setIsWaking(false);
     setError(null);
     setResult(null);
+
+    const wakeTimer = setTimeout(() => {
+      setIsWaking(true);
+    }, 4000);
 
     try {
       const response = await fetch(`${API_BASE}/analyze`, {
@@ -46,6 +52,8 @@ export default function App() {
         setError(err.message || 'An unexpected error occurred.');
       }
     } finally {
+      clearTimeout(wakeTimer);
+      setIsWaking(false);
       setLoading(false);
     }
   }, [emailText, sender]);
@@ -87,6 +95,7 @@ export default function App() {
               <ResultPanel
                 result={result}
                 loading={loading}
+                isWaking={isWaking}
                 error={error}
               />
             </div>
