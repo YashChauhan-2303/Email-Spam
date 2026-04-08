@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Header from './components/Header';
 import EmailInput from './components/EmailInput';
 import ResultPanel from './components/ResultPanel';
@@ -16,6 +16,14 @@ export default function App() {
   const [isWaking, setIsWaking]   = useState(false);
   const [error, setError]         = useState(null);
   const [activeTab, setActiveTab] = useState('analyzer'); // 'analyzer' | 'kb' | 'how'
+
+  // Wake up the backend on initial load
+  useEffect(() => {
+    fetch('https://email-spam-kisz.onrender.com/health')
+      .then(res => res.json())
+      .then(data => console.log('Backend warmed up:', data))
+      .catch(err => console.log('Backend warmup failed:', err));
+  }, []);
 
   const analyzeEmail = useCallback(async () => {
     if (!emailText.trim()) {
