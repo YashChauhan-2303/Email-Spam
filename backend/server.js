@@ -37,16 +37,7 @@ const HOST = "0.0.0.0";
 
 // ── Middleware ─────────────────────────────────────────────────
 
-// 1. Request Timeout Middleware (prevents hanging requests)
-app.use((req, res, next) => {
-  req.setTimeout(15000, () => {
-    console.warn(`⏳ Request Timeout on ${req.method} ${req.originalUrl}`);
-    if (!res.headersSent) {
-      res.status(408).json({ error: "Request Timeout - Server took too long to respond." });
-    }
-  });
-  next();
-});
+// 1. (Removed custom req.setTimeout middleware as it breaks proxy Keep-Alive)
 
 // Define allowed origins
 const allowedOrigins = [
@@ -140,6 +131,10 @@ const server = app.listen(PORT, HOST, () => {
   console.log(`║     Listening on: http://${HOST}:${PORT}                 ║`);
   console.log(`╚══════════════════════════════════════════════════════╝\n`);
 });
+
+// Configure proxy Keep-Alive to prevent Cloudflare/Render 521 Errors
+server.keepAliveTimeout = 120 * 1000;
+server.headersTimeout = 120 * 1000;
 
 // ── Graceful Shutdown (For Render Deploys) ─────────────────────
 process.on("SIGTERM", () => {
